@@ -10,7 +10,7 @@ vagrantfile:
         network:
             private_network: 192.168.56.102
             forwarded_port:
-                vflnp_sb53679hhm10:
+                vflnp_kdepll331p8u:
                     host: '2020'
                     guest: '22'
         post_up_message: ''
@@ -32,7 +32,7 @@ vagrantfile:
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
                     - '--parser future'
         synced_folder:
-            vflsf_s8q99n1a5jc5:
+            vflsf_u7fw82x69fto:
                 source: ./project
                 target: /var/www
                 sync_type: default
@@ -78,12 +78,12 @@ cron:
 nginx:
     install: '0'
     settings:
-        default_vhost: 1
+        default_vhost: 0
         proxy_buffer_size: 128k
         proxy_buffers: '4 256k'
     upstreams: {  }
     vhosts:
-        nxv_p3wp596swevk:
+        nxv_78o430jw2kun:
             server_name: awesome.dev
             server_aliases:
                 - www.awesome.dev
@@ -101,7 +101,7 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_3r3mmta1tra9:
+                nxvl_vrirq04vqhey:
                     location: /
                     autoindex: off
                     try_files:
@@ -111,7 +111,7 @@ nginx:
                     fastcgi: ''
                     fastcgi_index: ''
                     fastcgi_split_path: ''
-                nxvl_nj4m23hfzvxu:
+                nxvl_8c8ojjh19ads:
                     location: '~ \.php$'
                     autoindex: off
                     try_files:
@@ -130,7 +130,7 @@ apache:
     settings:
         user: www-data
         group: www-data
-        default_vhost: true
+        default_vhost: false
         manage_user: false
         manage_group: false
         sendfile: 0
@@ -138,7 +138,7 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_aov248oj0y7f:
+        av_l6o6nwycl5j7:
             servername: laravel.dev
             docroot: /var/www/public
             port: '80'
@@ -150,7 +150,7 @@ apache:
             ssl_chain: ''
             ssl_certs_dir: ''
             directories:
-                avd_5quf2pxfhzpt:
+                avd_5qorj8u57lqz:
                     path: /var/www/public
                     options:
                         - Indexes
@@ -162,7 +162,7 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_5gbo8sjocec3:
+                        avdfm_v5co7krs8ceo:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
@@ -171,7 +171,7 @@ apache:
 php:
     install: '1'
     settings:
-        version: '56'
+        version: '54'
     fpm_settings:
         port: 9000
     composer: '1'
@@ -181,6 +181,7 @@ php:
             - cli
             - intl
             - mcrypt
+            - xsl
         pear: {  }
         pecl: {  }
     ini:
@@ -231,19 +232,19 @@ mysql:
     install: '1'
     settings:
         version: '5.5'
-        root_password: '123'
+        root_password: root
         override_options: {  }
     adminer: 0
     users:
-        mysqlnu_ulmlu7norjve:
+        mysqlnu_pc3f99d1v4zi:
             name: laravel
             password: laravel
     databases:
-        mysqlnd_jae14gxva4qf:
+        mysqlnd_tpkbe1dmqrwe:
             name: laravel
             sql: ''
     grants:
-        mysqlng_xcwog2am800d:
+        mysqlng_q8sj03uqjd8h:
             user: laravel
             table: '*.*'
             privileges:
