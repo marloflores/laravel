@@ -255,14 +255,13 @@ if hash_key_equals($nginx_values, 'install', 1) {
       # remove empty values
       $location_trimmed = merge({
         'fast_cgi_params_extra' => [],
-      }, delete_values($location, ['']))
-alert($location['autoindex'])
-alert($autoindex)
+      }, delete_values($location, ''))
+
       # transforms user-data to expected
       $location_custom_data = merge($location_trimmed, {
         'autoindex' => $autoindex,
       })
-alert($location_custom_data)
+
       # Takes gui ENV vars: fastcgi_param {ENV_NAME} {VALUE}
       $location_custom_cfg_append = prefix(
         $location_custom_data['fast_cgi_params_extra'],
