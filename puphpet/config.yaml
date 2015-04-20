@@ -1,402 +1,316 @@
 vagrantfile:
-  target: rackspace
-  vm:
-    box: rackspace
-    hostname: master
-    provider:
-      rackspace:
-        server_name: ~
-        image: 598a4282-f14b-4e50-af4c-b3e52749d9f9
-        region: dfw
-        size: '2GB Standard Instance'
-        username: ~
-        api_key: ~
-    provision:
-      puppet:
-        manifests_path: puphpet/puppet
-        manifest_file: site.pp
-        module_path: puphpet/puppet/modules
-        options:
-          - '--verbose'
-          - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
-          - '--parser future'
-    synced_folder:
-      ssl_certs:
-        source: ~/www/puphpet/ssl
-        target: /etc/ssl/certs/puphpet.com/
-      centos_httpd:
-        source: ~/www/puphpet/files/centos
-        target: /var/www/repo.puphpet.com/public_html/centos
-  ssh:
-    host: null
-    port: null
-    private_key_path: ~/.ssh/id_rsa
-    public_key_path: ~/.ssh/id_rsa.pub
-    username: jtreminio
-    guest_port: null
-    keep_alive: true
-    forward_agent: false
-    forward_x11: false
-    shell: 'bash -l'
-  vagrant:
-    host: detect
+    target: local
+    vm:
+        box: puphpet/ubuntu1204-x64
+        box_url: puphpet/ubuntu1204-x64
+        hostname: ''
+        memory: '512'
+        cpus: '1'
+        chosen_provider: virtualbox
+        network:
+            private_network: 192.168.56.102
+            forwarded_port:
+                vflnp_sb53679hhm10:
+                    host: '2020'
+                    guest: '22'
+        post_up_message: ''
+        provider:
+            virtualbox:
+                modifyvm:
+                    natdnshostresolver1: on
+            vmware:
+                numvcpus: 1
+            parallels:
+                cpus: 1
+        provision:
+            puppet:
+                manifests_path: puphpet/puppet
+                manifest_file: site.pp
+                module_path: puphpet/puppet/modules
+                options:
+                    - '--verbose'
+                    - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
+                    - '--parser future'
+        synced_folder:
+            vflsf_s8q99n1a5jc5:
+                source: ./project
+                target: /var/www
+                sync_type: default
+                rsync:
+                    args:
+                        - '--verbose'
+                        - '--archive'
+                        - '-z'
+                    exclude:
+                        - .vagrant/
+                        - .git/
+                    auto: 'true'
+                owner: www-data
+                group: www-data
+        usable_port_range:
+            start: 10200
+            stop: 10500
+    ssh:
+        host: null
+        port: null
+        private_key_path: null
+        username: vagrant
+        guest_port: null
+        keep_alive: true
+        forward_agent: false
+        forward_x11: false
+        shell: 'bash -l'
+    vagrant:
+        host: detect
 server:
-  install: '1'
-  packages:
-    - vim
-    - htop
-    - curl
-    - libgdbm3
-    - wget
-    - zip
-    - realpath
-    - apt-mirror
+    install: '1'
+    packages: {  }
 users_groups:
-  install: '1'
-  groups: {  }
-  users: {  }
+    install: '1'
+    groups: {  }
+    users: {  }
 firewall:
-  install: '1'
-  rules: {  }
+    install: '1'
+    rules: {  }
 cron:
-  install: '1'
-  jobs:
-    cj_kmhirgankbo1:
-      name: 'run apt-mirror'
-      user: root
-      command: '/usr/bin/apt-mirror > /var/spool/apt-mirror/var/cron.log'
-      minute: ''
-      hour: '2'
-      weekday: ''
-      month: ''
-      monthday: ''
-    cj_82loyiclkpfi:
-      name: 'Clear /tmp folder'
-      user: root
-      command: 'rm -rf /tmp/*'
-      minute: '*/10'
-      hour: ''
-      weekday: ''
-      month: ''
-      monthday: ''
+    install: '1'
+    jobs: {  }
 nginx:
-  install: '1'
-  settings:
-    default_vhost: 1
-    proxy_buffer_size: 128k
-    proxy_buffers: '4 256k'
-  upstreams: {  }
-  vhosts:
-    nxv_5vkfivoxivyv:
-      server_name: puphpet.com
-      server_aliases:
-        - www.puphpet.com
-      www_root: /var/www/puphpet.com/public_html/web
-      listen_port: '80'
-      index_files:
-        - index.html
-        - index.htm
-        - index.php
-      client_max_body_size: 1m
-      ssl: '1'
-      ssl_cert: /etc/ssl/certs/puphpet.com/puphpet_com.crt
-      ssl_key: /etc/ssl/certs/puphpet.com/apache2.key
-      ssl_port: '443'
-      rewrite_to_https: '1'
-      spdy: '1'
-      locations:
-        nxvl_wv3j0wnrxro0:
-          location: /
-          autoindex: off
-          try_files:
-            - $uri
-            - /app.php$is_args$args
-          fastcgi: ''
-          fastcgi_index: ''
-          fastcgi_split_path: ''
-        nxvl_b2aitni4qq5s:
-          location: '~ ^/app\.php(/|$)'
-          autoindex: off
-          try_files:
-            - $uri
-            - $uri/
-            - /app.php$is_args$args
-          fastcgi: '127.0.0.1:9000'
-          fastcgi_index: app.php
-          fastcgi_split_path: '^(.+\.php)(/.*)$'
-          fast_cgi_params_extra:
-            - 'SCRIPT_FILENAME $document_root$fastcgi_script_name'
-    nxv_o6x6vu7p0uyw:
-      server_name: blog.puphpet.com
-      server_aliases:
-        - www.blog.puphpet.com
-      www_root: /var/www/blog.puphpet.com/public_html
-      listen_port: '80'
-      index_files:
-        - index.html
-        - index.htm
-        - index.php
-      client_max_body_size: 1m
-      ssl: '0'
-      ssl_cert: ''
-      ssl_key: ''
-      ssl_port: '443'
-      rewrite_to_https: '1'
-      spdy: '1'
-      locations:
-        nxvl_defaultxx:
-          location: /
-          autoindex: off
-          try_files: []
-          fastcgi: ''
-          fastcgi_index: ''
-          fastcgi_split_path: ''
-    nxv_wrknd0ty6un9:
-      server_name: files.puphpet.com
-      server_aliases:
-        - www.files.puphpet.com
-      www_root: /var/www/files.puphpet.com/
-      listen_port: '80'
-      index_files:
-        - index.html
-        - index.htm
-        - index.php
-      client_max_body_size: 1m
-      ssl: '0'
-      ssl_cert: ''
-      ssl_key: ''
-      ssl_port: '443'
-      rewrite_to_https: '1'
-      spdy: '1'
-      locations:
-        nxvl_defaultxy:
-          location: /
-          autoindex: on
-          try_files: []
-          fastcgi: ''
-          fastcgi_index: ''
-          fastcgi_split_path: ''
-    nxv_cfc51zmy7lgr:
-      server_name: repo.puphpet.com
-      server_aliases:
-        - www.repo.puphpet.com
-      www_root: /var/www/repo.puphpet.com/public_html/
-      listen_port: '80'
-      index_files:
-        - index.html
-        - index.htm
-        - index.php
-      client_max_body_size: 1m
-      ssl: '0'
-      ssl_cert: ''
-      ssl_key: ''
-      ssl_port: '443'
-      rewrite_to_https: '1'
-      spdy: '1'
-      locations:
-        nxvl_defaultxz:
-          location: /
-          autoindex: on
-          try_files: []
-          fastcgi: ''
-          fastcgi_index: ''
-          fastcgi_split_path: ''
-  proxies: {  }
+    install: '0'
+    settings:
+        default_vhost: 1
+        proxy_buffer_size: 128k
+        proxy_buffers: '4 256k'
+    upstreams: {  }
+    vhosts:
+        nxv_p3wp596swevk:
+            server_name: awesome.dev
+            server_aliases:
+                - www.awesome.dev
+            www_root: /var/www/awesome
+            listen_port: '80'
+            index_files:
+                - index.html
+                - index.htm
+                - index.php
+            client_max_body_size: 1m
+            ssl: '0'
+            ssl_cert: ''
+            ssl_key: ''
+            ssl_port: '443'
+            rewrite_to_https: '1'
+            spdy: '1'
+            locations:
+                nxvl_3r3mmta1tra9:
+                    location: /
+                    autoindex: off
+                    try_files:
+                        - $uri
+                        - $uri/
+                        - /index.php$is_args$args
+                    fastcgi: ''
+                    fastcgi_index: ''
+                    fastcgi_split_path: ''
+                nxvl_nj4m23hfzvxu:
+                    location: '~ \.php$'
+                    autoindex: off
+                    try_files:
+                        - $uri
+                        - $uri/
+                        - /index.php$is_args$args
+                    fastcgi: '127.0.0.1:9000'
+                    fastcgi_index: index.php
+                    fastcgi_split_path: '^(.+\.php)(/.*)$'
+                    fast_cgi_params_extra:
+                        - 'SCRIPT_FILENAME $request_filename'
+                        - 'APP_ENV dev'
+    proxies: {  }
 apache:
-  install: '0'
-  settings:
-    user: www-data
-    group: www-data
-    default_vhost: true
-    manage_user: false
-    manage_group: false
-    sendfile: 0
-  modules:
-    - proxy_fcgi
-    - rewrite
-  vhosts:
-    av_l4hcbd3j8kk0:
-      servername: awesome.dev
-      serveraliases:
-        - www.awesome.dev
-      docroot: /var/www/awesome
-      port: '80'
-      setenv:
-        - 'APP_ENV dev'
-      custom_fragment: ''
-      ssl_cert: ''
-      ssl_key: ''
-      ssl_chain: ''
-      ssl_certs_dir: ''
-      directories:
-        avd_8359l28knv6l:
-          path: /var/www/awesome
-          options:
-            - Indexes
-            - FollowSymlinks
-            - MultiViews
-          allow_override:
-            - All
-          require:
-            - 'all granted'
-          custom_fragment: ''
-          files_match:
-            avdfm_c6x0whomp5sc:
-              path: \.php$
-              sethandler: 'proxy:fcgi://127.0.0.1:9000'
-              custom_fragment: ''
-              provider: filesmatch
-          provider: directory
+    install: '1'
+    settings:
+        user: www-data
+        group: www-data
+        default_vhost: true
+        manage_user: false
+        manage_group: false
+        sendfile: 0
+    modules:
+        - proxy_fcgi
+        - rewrite
+    vhosts:
+        av_aov248oj0y7f:
+            servername: laravel.dev
+            docroot: /var/www/public
+            port: '80'
+            setenv:
+                - 'APP_ENV dev'
+            custom_fragment: ''
+            ssl_cert: ''
+            ssl_key: ''
+            ssl_chain: ''
+            ssl_certs_dir: ''
+            directories:
+                avd_5quf2pxfhzpt:
+                    path: /var/www/public
+                    options:
+                        - Indexes
+                        - FollowSymlinks
+                        - MultiViews
+                    allow_override:
+                        - All
+                    require:
+                        - 'all granted'
+                    custom_fragment: ''
+                    files_match:
+                        avdfm_5gbo8sjocec3:
+                            path: \.php$
+                            sethandler: 'proxy:fcgi://127.0.0.1:9000'
+                            custom_fragment: ''
+                            provider: filesmatch
+                    provider: directory
 php:
-  install: '1'
-  settings:
-    version: '56'
-  fpm_settings:
-    port: 9000
-  composer: '1'
-  composer_home: ''
-  modules:
-    php:
-      - cli
-      - intl
-      - mcrypt
-      - curl
-    pear: {  }
-    pecl: {  }
-  ini:
-    display_errors: On
-    error_reporting: '-1'
-    session.save_path: /var/lib/php/session
-    date.timezone: UTC
+    install: '1'
+    settings:
+        version: '56'
+    fpm_settings:
+        port: 9000
+    composer: '1'
+    composer_home: ''
+    modules:
+        php:
+            - cli
+            - intl
+            - mcrypt
+        pear: {  }
+        pecl: {  }
+    ini:
+        display_errors: On
+        error_reporting: '-1'
+        session.save_path: /var/lib/php/session
+        date.timezone: UTC
 xdebug:
-  install: '0'
-  settings:
-    xdebug.default_enable: '1'
-    xdebug.remote_autostart: '0'
-    xdebug.remote_connect_back: '1'
-    xdebug.remote_enable: '1'
-    xdebug.remote_handler: dbgp
-    xdebug.remote_port: '9000'
+    install: '1'
+    settings:
+        xdebug.default_enable: '1'
+        xdebug.remote_autostart: '0'
+        xdebug.remote_connect_back: '1'
+        xdebug.remote_enable: '1'
+        xdebug.remote_handler: dbgp
+        xdebug.remote_port: '9000'
 xhprof:
-  install: '0'
+    install: '1'
 wpcli:
-  install: '0'
-  version: ''
+    install: '0'
+    version: 6.3.0
 drush:
-  install: '0'
-  version: null
+    install: '0'
+    version: null
 ruby:
-  install: '1'
-  versions:
-    8A4Kh1tblYoq:
-      version: 1.9.3
-      gems:
-        - librarian-puppet
-        - puppet-lint
-      bundler: '1'
+    install: '1'
+    versions: {  }
 python:
-  install: '1'
-  packages: {  }
-  versions: {  }
+    install: '1'
+    packages: {  }
+    versions: {  }
 nodejs:
-  install: '0'
-  npm_packages: {  }
+    install: '0'
+    npm_packages: {  }
 hhvm:
-  install: '0'
-  nightly: 0
-  composer: '1'
-  composer_home: ''
-  settings:
-    host: 127.0.0.1
-    port: '9000'
-  ini:
-    display_errors: On
-    error_reporting: '-1'
-  timezone: null
+    install: '0'
+    nightly: 0
+    composer: '1'
+    composer_home: ''
+    settings:
+        host: 127.0.0.1
+        port: '9000'
+    ini:
+        display_errors: On
+        error_reporting: '-1'
+    timezone: null
 mysql:
-  install: '1'
-  settings:
-    version: '5.6'
-    root_password: '123'
-    override_options: {  }
-  adminer: 0
-  users:
-    mysqlnu_2g5omzzuxc29:
-      name: dbuser
-      password: '123'
-  databases:
-    mysqlnd_gsxpe4mdhkzq:
-      name: dbname
-      sql: ''
-  grants:
-    mysqlng_o8uw7aomxp9d:
-      user: dbuser
-      table: '*.*'
-      privileges:
-        - ALL
+    install: '1'
+    settings:
+        version: '5.5'
+        root_password: '123'
+        override_options: {  }
+    adminer: 0
+    users:
+        mysqlnu_ulmlu7norjve:
+            name: laravel
+            password: laravel
+    databases:
+        mysqlnd_jae14gxva4qf:
+            name: laravel
+            sql: ''
+    grants:
+        mysqlng_xcwog2am800d:
+            user: laravel
+            table: '*.*'
+            privileges:
+                - ALL
 postgresql:
-  install: '0'
-  settings:
-    global:
-      encoding: UTF8
-      version: '9.3'
-    server:
-      postgres_password: '123'
-  databases: {  }
-  users: {  }
-  grants: {  }
-  adminer: 0
+    install: '0'
+    settings:
+        global:
+            encoding: UTF8
+            version: '9.3'
+        server:
+            postgres_password: '123'
+    databases: {  }
+    users: {  }
+    grants: {  }
+    adminer: 0
 mongodb:
-  install: '0'
-  settings:
-    auth: 1
-    bind_ip: 127.0.0.1
-    port: '27017'
-  databases: {  }
+    install: '0'
+    settings:
+        auth: 1
+        bind_ip: 127.0.0.1
+        port: '27017'
+    databases: {  }
 redis:
-  install: '0'
-  settings:
-    conf_port: '6379'
+    install: '0'
+    settings:
+        conf_port: '6379'
 sqlite:
-  install: '0'
-  adminer: 0
-  databases: {  }
+    install: '0'
+    adminer: 0
+    databases: {  }
 mailcatcher:
-  install: '0'
-  settings:
-    smtp_ip: 0.0.0.0
-    smtp_port: 1025
-    http_ip: 0.0.0.0
-    http_port: '1080'
-    mailcatcher_path: /usr/local/rvm/wrappers/default
-    from_email_method: inline
+    install: '0'
+    settings:
+        smtp_ip: 0.0.0.0
+        smtp_port: 1025
+        http_ip: 0.0.0.0
+        http_port: '1080'
+        mailcatcher_path: /usr/local/rvm/wrappers/default
+        from_email_method: inline
 beanstalkd:
-  install: '0'
-  settings:
-    listenaddress: 0.0.0.0
-    listenport: '13000'
-    maxjobsize: '65535'
-    maxconnections: '1024'
+    install: '0'
+    settings:
+        listenaddress: 0.0.0.0
+        listenport: '13000'
+        maxjobsize: '65535'
+        maxconnections: '1024'
+        binlogdir: /var/lib/beanstalkd/binlog
+        binlogfsync: null
+        binlogsize: '10485760'
+    beanstalk_console: 0
     binlogdir: /var/lib/beanstalkd/binlog
-    binlogfsync: null
-    binlogsize: '10485760'
-  beanstalk_console: 0
-  binlogdir: /var/lib/beanstalkd/binlog
 rabbitmq:
-  install: '0'
-  settings:
-    port: '5672'
-  users: {  }
-  vhosts: {  }
-  plugins: {  }
+    install: '0'
+    settings:
+        port: '5672'
+    users: {  }
+    vhosts: {  }
+    plugins: {  }
 elastic_search:
-  install: '0'
-  settings:
-    version: 1.4.1
-    java_install: true
+    install: '0'
+    settings:
+        version: 1.4.1
+        java_install: true
 solr:
-  install: '0'
-  settings:
-    version: 4.10.2
-    port: '8984'
+    install: '0'
+    settings:
+        version: 4.10.2
+        port: '8984'
 
