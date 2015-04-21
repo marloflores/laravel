@@ -55,7 +55,7 @@
         <apply executable="php" failonerror="true" taskname="lint">
             <arg value="-l" />
 
-            <fileset dir="${basedir}/project/src">
+            <fileset dir="${basedir}/project/app">
                 <include name="**/*.php" />
                 <modified />
             </fileset>
@@ -74,7 +74,7 @@
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
         <exec executable="${toolsdir}phploc" taskname="phploc">
             <arg value="--count-tests" />
-            <arg path="${basedir}/project/src" />
+            <arg path="${basedir}/project/app" />
             <arg path="${basedir}/project/tests" />
         </exec>
 
@@ -91,7 +91,7 @@
             <arg path="${basedir}/project/build/logs/phploc.csv" />
             <arg value="--log-xml" />
             <arg path="${basedir}/project/build/logs/phploc.xml" />
-            <arg path="${basedir}/project/src" />
+            <arg path="${basedir}/project/app" />
             <arg path="${basedir}/project/tests" />
         </exec>
 
@@ -106,7 +106,7 @@
             <arg value="--jdepend-xml=${basedir}/project/build/logs/jdepend.xml" />
             <arg value="--jdepend-chart=${basedir}/project/build/pdepend/dependencies.svg" />
             <arg value="--overview-pyramid=${basedir}/project/build/pdepend/overview-pyramid.svg" />
-            <arg path="${basedir}/project/src" />
+            <arg path="${basedir}/project/app" />
         </exec>
 
         <property name="pdepend.done" value="true"/>
@@ -116,7 +116,7 @@
             unless="phpmd.done"
             description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="${toolsdir}phpmd" taskname="phpmd">
-            <arg path="${basedir}/project/src" />
+            <arg path="${basedir}/project/app" />
             <arg value="text" />
             <arg path="${basedir}/project/build/phpmd.xml" />
         </exec>
@@ -129,7 +129,7 @@
             depends="prepare"
             description="Perform project mess detection using PHPMD and log result in XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${toolsdir}phpmd" taskname="phpmd">
-            <arg path="${basedir}/project/src" />
+            <arg path="${basedir}/project/app" />
             <arg value="xml" />
             <arg path="${basedir}/project/build/phpmd.xml" />
             <arg value="--reportfile" />
@@ -146,7 +146,7 @@
             <arg value="--standard=PSR2" />
             <arg value="--extensions=php" />
             <arg value="--ignore=autoload.php" />
-            <arg path="${basedir}/project/src" />
+            <arg path="${basedir}/project/app" />
             <arg path="${basedir}/project/tests" />
         </exec>
 
@@ -163,7 +163,7 @@
             <arg value="--standard=PSR2" />
             <arg value="--extensions=php" />
             <arg value="--ignore=autoload.php" />
-            <arg path="${basedir}/project/src" />
+            <arg path="${basedir}/project/app" />
         </exec>
 
         <property name="phpcs.done" value="true"/>
@@ -173,7 +173,7 @@
             unless="phpcpd.done"
             description="Find duplicate code using PHPCPD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="${toolsdir}phpcpd" taskname="phpcpd">
-            <arg path="${basedir}/project/src" />
+            <arg path="${basedir}/project/app" />
         </exec>
 
         <property name="phpcpd.done" value="true"/>
@@ -186,7 +186,7 @@
         <exec executable="${toolsdir}phpcpd" taskname="phpcpd">
             <arg value="--log-pmd" />
             <arg path="${basedir}/project/build/logs/pmd-cpd.xml" />
-            <arg path="${basedir}/project/src" />
+            <arg path="${basedir}/project/app" />
         </exec>
 
         <property name="phpcpd.done" value="true"/>
