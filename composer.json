@@ -1,5 +1,6 @@
 {
     "require-dev": {
+        "phpunit/phpunit": "4.6.*",
         "squizlabs/php_codesniffer": "1.5.*",
         "phpmd/phpmd": "2.1.*",
         "sebastian/phpcpd": "2.0.*",
