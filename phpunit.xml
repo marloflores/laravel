@@ -12,12 +12,12 @@
         >
     <testsuites>
         <testsuite name="Application Test Suite">
-            <directory>./tests/</directory>
+            <directory>./project/tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
-            <directory>./app/</directory>
+            <directory>./project/app/</directory>
         </whitelist>
     </filter>
     <logging>
