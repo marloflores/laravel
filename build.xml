@@ -29,11 +29,11 @@
     <target name="clean"
             unless="clean.done"
             description="Cleanup build artifacts">
-        <delete dir="${basedir}/project/build/api"/>
-        <delete dir="${basedir}/project/build/coverage"/>
-        <delete dir="${basedir}/project/build/logs"/>
-        <delete dir="${basedir}/project/build/pdepend"/>
-        <delete dir="${basedir}/project/build/phpdox"/>
+        <delete dir="${basedir}/build/api"/>
+        <delete dir="${basedir}/build/coverage"/>
+        <delete dir="${basedir}/build/logs"/>
+        <delete dir="${basedir}/build/pdepend"/>
+        <delete dir="${basedir}/build/phpdox"/>
         <property name="clean.done" value="true"/>
     </target>
 
@@ -41,11 +41,11 @@
             unless="prepare.done"
             depends="clean"
             description="Prepare for build">
-        <mkdir dir="${basedir}/project/build/api"/>
-        <mkdir dir="${basedir}/project/build/coverage"/>
-        <mkdir dir="${basedir}/project/build/logs"/>
-        <mkdir dir="${basedir}/project/build/pdepend"/>
-        <mkdir dir="${basedir}/project/build/phpdox"/>
+        <mkdir dir="${basedir}/build/api"/>
+        <mkdir dir="${basedir}/build/coverage"/>
+        <mkdir dir="${basedir}/build/logs"/>
+        <mkdir dir="${basedir}/build/pdepend"/>
+        <mkdir dir="${basedir}/build/phpdox"/>
         <property name="prepare.done" value="true"/>
     </target>
 
@@ -88,9 +88,9 @@
         <exec executable="${toolsdir}phploc" taskname="phploc">
             <arg value="--count-tests" />
             <arg value="--log-csv" />
-            <arg path="${basedir}/project/build/logs/phploc.csv" />
+            <arg path="${basedir}/build/logs/phploc.csv" />
             <arg value="--log-xml" />
-            <arg path="${basedir}/project/build/logs/phploc.xml" />
+            <arg path="${basedir}/build/logs/phploc.xml" />
             <arg path="${basedir}/project/app" />
             <arg path="${basedir}/project/tests" />
         </exec>
@@ -103,9 +103,9 @@
             depends="prepare"
             description="Calculate software metrics using PHP_Depend and log result in XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${toolsdir}pdepend" taskname="pdepend">
-            <arg value="--jdepend-xml=${basedir}/project/build/logs/jdepend.xml" />
-            <arg value="--jdepend-chart=${basedir}/project/build/pdepend/dependencies.svg" />
-            <arg value="--overview-pyramid=${basedir}/project/build/pdepend/overview-pyramid.svg" />
+            <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+            <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
+            <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
             <arg path="${basedir}/project/app" />
         </exec>
 
@@ -118,7 +118,7 @@
         <exec executable="${toolsdir}phpmd" taskname="phpmd">
             <arg path="${basedir}/project/app" />
             <arg value="text" />
-            <arg path="${basedir}/project/build/phpmd.xml" />
+            <arg path="${basedir}/build/phpmd.xml" />
         </exec>
 
         <property name="phpmd.done" value="true"/>
@@ -131,9 +131,9 @@
         <exec executable="${toolsdir}phpmd" taskname="phpmd">
             <arg path="${basedir}/project/app" />
             <arg value="xml" />
-            <arg path="${basedir}/project/build/phpmd.xml" />
+            <arg path="${basedir}/build/phpmd.xml" />
             <arg value="--reportfile" />
-            <arg path="${basedir}/project/build/logs/pmd.xml" />
+            <arg path="${basedir}/build/logs/pmd.xml" />
         </exec>
 
         <property name="phpmd.done" value="true"/>
@@ -159,7 +159,7 @@
             description="Find coding standard violations using PHP_CodeSniffer and log result in XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${toolsdir}phpcs" output="/dev/null" taskname="phpcs">
             <arg value="--report=checkstyle" />
-            <arg value="--report-file=${basedir}/project/build/logs/checkstyle.xml" />
+            <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
             <arg value="--standard=PSR2" />
             <arg value="--extensions=php" />
             <arg value="--ignore=autoload.php" />
@@ -185,7 +185,7 @@
             description="Find duplicate code using PHPCPD and log result in XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${toolsdir}phpcpd" taskname="phpcpd">
             <arg value="--log-pmd" />
-            <arg path="${basedir}/project/build/logs/pmd-cpd.xml" />
+            <arg path="${basedir}/build/logs/pmd-cpd.xml" />
             <arg path="${basedir}/project/app" />
         </exec>
 
@@ -208,7 +208,7 @@
             unless="phpdox.done"
             depends="phploc-ci,phpcs-ci,phpmd-ci"
             description="Generate project documentation using phpDox">
-        <exec executable="${toolsdir}phpdox" dir="${basedir}/project/build" taskname="phpdox"/>
+        <exec executable="${toolsdir}phpdox" dir="${basedir}/build" taskname="phpdox"/>
 
         <property name="phpdox.done" value="true"/>
     </target>
